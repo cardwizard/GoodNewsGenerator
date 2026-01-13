@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Article - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-form-container">
+    <h1>Edit News Article</h1>
+
+    <form method="POST" action="{{ url_for('admin.edit_news', article_id=article.id) }}" class="admin-form">
+        <div class="form-group">
+            <label for="title">Article Title *</label>
+            <input type="text" id="title" name="title" required maxlength="255"
+                   value="{{ article.title }}">
+        </div>
+
+        <div class="form-group">
+            <label for="url">Article URL *</label>
+            <input type="url" id="url" name="url" required
+                   value="{{ article.source_url }}">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="4">{{ article.description or '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="image_url">Image URL (Optional)</label>
+            <input type="url" id="image_url" name="image_url"
+                   value="{{ article.image_url or '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="source_name">Source Name</label>
+            <input type="text" id="source_name" name="source_name"
+                   value="{{ article.source_name }}" maxlength="100">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Save Changes</button>
+            <a href="{{ url_for('admin.manage_news') }}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.admin-form-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+.admin-form-container h1 {
+    text-align: center;
+    color: #262626;
+    margin-bottom: 2rem;
+}
+
+.admin-form {
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background-color: white;
+    color: #262626;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-secondary:hover {
+    background-color: #fafafa;
+}
+</style>
+{% endblock %}

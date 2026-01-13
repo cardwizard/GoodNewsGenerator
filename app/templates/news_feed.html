@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}News Feed - Good News Aggregator{% endblock %}
+
+{% block content %}
+<div class="feed-container">
+    <div class="feed-header">
+        <h2>Today's Good News</h2>
+        <p class="feed-info">{{ total_articles }} articles in cache</p>
+    </div>
+
+    <div id="articles-container">
+        {% if articles %}
+            {% for article in articles %}
+            <article class="news-card">
+                <div class="card-image">
+                    {% if article.image_url %}
+                        <img src="{{ article.image_url }}" alt="{{ article.title }}"
+                             onerror="this.src='/static/images/placeholder.jpg'">
+                    {% else %}
+                        <div class="placeholder-image">
+                            <span>📰</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-content">
+                    <h3>{{ article.title }}</h3>
+                    <p class="meta">
+                        <span class="source">{{ article.source_name }}</span>
+                        {% if article.published_at %}
+                        <span class="separator">•</span>
+                        <span class="date">{{ article.published_at.strftime('%B %d, %Y') }}</span>
+                        {% endif %}
+                    </p>
+                    {% if article.description %}
+                        <p class="description">{{ article.description }}</p>
+                    {% endif %}
+                    <a href="{{ article.source_url }}" target="_blank" class="read-more">
+                        Read Full Article →
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        {% else %}
+            <div class="no-articles">
+                <h3>No articles available</h3>
+                <p>Please check back later or contact the administrator.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if articles|length == 5 %}
+    <div class="load-more-container">
+        <button id="load-more-btn" class="btn-load-more" onclick="loadMore()">
+            Load More Good News
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

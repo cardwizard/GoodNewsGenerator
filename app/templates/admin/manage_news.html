@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Articles - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1>Manage News Articles</h1>
+
+    <div class="manage-header">
+        <div class="filter-buttons">
+            <a href="{{ url_for('admin.manage_news', filter='all') }}"
+               class="filter-btn {% if filter_type == 'all' %}active{% endif %}">
+                All Articles
+            </a>
+            <a href="{{ url_for('admin.manage_news', filter='manual') }}"
+               class="filter-btn {% if filter_type == 'manual' %}active{% endif %}">
+                Manual Only
+            </a>
+            <a href="{{ url_for('admin.manage_news', filter='auto') }}"
+               class="filter-btn {% if filter_type == 'auto' %}active{% endif %}">
+                Auto-Fetched Only
+            </a>
+        </div>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-back">← Back to Dashboard</a>
+    </div>
+
+    <!-- Bulk Delete Actions -->
+    <div class="bulk-actions">
+        <div class="bulk-actions-left">
+            <button onclick="toggleSelectAll()" class="btn-select-all" id="selectAllBtn">
+                ☑️ Select All
+            </button>
+            <form method="POST" action="{{ url_for('admin.bulk_delete') }}" style="display: inline;" id="bulkDeleteForm">
+                <button type="submit" class="btn-bulk-delete" onclick="return confirmBulkDelete()">
+                    🗑️ Delete Selected
+                </button>
+            </form>
+        </div>
+        <div class="bulk-actions-right">
+            <form method="POST" action="{{ url_for('admin.delete_all_auto') }}" style="display: inline;"
+                  onsubmit="return confirm('Delete ALL auto-fetched articles? This cannot be undone!');">
+                <button type="submit" class="btn-danger-small">Delete All Auto</button>
+            </form>
+            <form method="POST" action="{{ url_for('admin.delete_all_manual') }}" style="display: inline;"
+                  onsubmit="return confirm('Delete ALL manual articles? This cannot be undone!');">
+                <button type="submit" class="btn-danger-small">Delete All Manual</button>
+            </form>
+            <form method="POST" action="{{ url_for('admin.delete_all') }}" style="display: inline;"
+                  onsubmit="return confirm('Delete ALL articles? This will remove EVERYTHING! Are you absolutely sure?');">
+                <button type="submit" class="btn-danger">Delete All Articles</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="articles-table-container">
+        {% if articles %}
+            <table class="articles-table">
+                <thead>
+                    <tr>
+                        <th width="50">
+                            <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                        </th>
+                        <th>Title</th>
+                        <th>Source</th>
+                        <th>Type</th>
+                        <th>Date Added</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="article-checkbox" value="{{ article.id }}"
+                                   name="article_ids[]" form="bulkDeleteForm">
+                        </td>
+                        <td>
+                            <a href="{{ article.source_url }}" target="_blank" class="article-title">
+                                {{ article.title }}
+                            </a>
+                        </td>
+                        <td>{{ article.source_name }}</td>
+                        <td>
+                            <span class="badge badge-{{ article.source_type }}">
+                                {{ article.source_type }}
+                            </span>
+                        </td>
+                        <td>{{ article.cached_at.strftime('%b %d, %Y') }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                {% if article.source_type == 'manual' %}
+                                <a href="{{ url_for('admin.edit_news', article_id=article.id) }}"
+                                   class="btn-action btn-edit">Edit</a>
+                                {% endif %}
+                                <form method="POST"
+                                      action="{{ url_for('admin.delete_news', article_id=article.id) }}"
+                                      style="display: inline;"
+                                      onsubmit="return confirm('Delete this article?');">
+                                    <button type="submit" class="btn-action btn-delete">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-data">No articles found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleSelectAll() {
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const checkboxes = document.querySelectorAll('.article-checkbox');
+    const isChecked = selectAllCheckbox.checked;
+
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = isChecked;
+    });
+
+    updateSelectAllButton();
+}
+
+function updateSelectAllButton() {
+    const checkboxes = document.querySelectorAll('.article-checkbox');
+    const checkedCount = document.querySelectorAll('.article-checkbox:checked').length;
+    const selectAllBtn = document.getElementById('selectAllBtn');
+
+    if (checkedCount > 0) {
+        selectAllBtn.textContent = `☑️ ${checkedCount} Selected`;
+    } else {
+        selectAllBtn.textContent = '☑️ Select All';
+    }
+}
+
+function confirmBulkDelete() {
+    const checkedCount = document.querySelectorAll('.article-checkbox:checked').length;
+
+    if (checkedCount === 0) {
+        alert('Please select at least one article to delete');
+        return false;
+    }
+
+    return confirm(`Delete ${checkedCount} selected article(s)?`);
+}
+
+// Update button text when individual checkboxes are clicked
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.article-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectAllButton);
+    });
+});
+</script>
+
+<style>
+.manage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #262626;
+    font-weight: 500;
+}
+
+.filter-btn.active {
+    background: #0095f6;
+    color: white;
+    border-color: #0095f6;
+}
+
+.filter-btn:hover:not(.active) {
+    background: #fafafa;
+}
+
+.btn-back {
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #262626;
+}
+
+.btn-back:hover {
+    background: #fafafa;
+}
+
+/* Bulk Actions */
+.bulk-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.bulk-actions-left, .bulk-actions-right {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-select-all {
+    padding: 0.5rem 1rem;
+    background: #0095f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-select-all:hover {
+    background: #007cc2;
+}
+
+.btn-bulk-delete {
+    padding: 0.5rem 1rem;
+    background: #ed4956;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-bulk-delete:hover {
+    background: #c92a3a;
+}
+
+.btn-danger-small {
+    padding: 0.4rem 0.8rem;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.btn-danger-small:hover {
+    background: #ee5a52;
+}
+
+.btn-danger {
+    padding: 0.5rem 1rem;
+    background: #c92a3a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-danger:hover {
+    background: #a02329;
+}
+
+.articles-table-container {
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.articles-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.articles-table th {
+    background: #fafafa;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #262626;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.articles-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.articles-table tr:last-child td {
+    border-bottom: none;
+}
+
+.article-title {
+    color: #0095f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.article-title:hover {
+    text-decoration: underline;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-manual {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge-auto {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-action {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.btn-edit {
+    background: #0095f6;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #007cc2;
+}
+
+.btn-delete {
+    background: #ed4956;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #c92a3a;
+}
+
+.no-data {
+    text-align: center;
+    padding: 2rem;
+    color: #8e8e8e;
+}
+</style>
+{% endblock %}

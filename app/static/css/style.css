@@ -1,0 +1,380 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #fafafa;
+    color: #262626;
+    line-height: 1.6;
+}
+
+/* Navigation */
+.navbar {
+    background-color: #fff;
+    border-bottom: 1px solid #dbdbdb;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    color: #262626;
+    font-weight: 600;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.username {
+    color: #262626;
+    font-weight: 500;
+}
+
+.btn-admin {
+    padding: 0.5rem 1rem;
+    background-color: #8e44ad;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-admin:hover {
+    background-color: #6c3483;
+}
+
+.btn-logout {
+    padding: 0.5rem 1rem;
+    background-color: #0095f6;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-logout:hover {
+    background-color: #007cc2;
+}
+
+/* Flash Messages */
+.flash-messages {
+    max-width: 600px;
+    margin: 1rem auto;
+    padding: 0 20px;
+}
+
+.flash-message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.flash-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.flash-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Authentication Pages */
+.auth-container {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 0 20px;
+}
+
+.auth-card {
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #262626;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #262626;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #fafafa;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #0095f6;
+    background-color: #fff;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #8e8e8e;
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #007cc2;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #262626;
+}
+
+.auth-link a {
+    color: #0095f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+/* News Feed */
+.feed-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+.feed-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.feed-header h2 {
+    color: #262626;
+    margin-bottom: 0.5rem;
+}
+
+.feed-info {
+    color: #8e8e8e;
+    font-size: 0.9rem;
+}
+
+#articles-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+/* News Card (Instagram-style) */
+.news-card {
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+}
+
+.news-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background-color: #fafafa;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-size: 4rem;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+.card-content h3 {
+    color: #262626;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #8e8e8e;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.source {
+    font-weight: 600;
+    color: #262626;
+}
+
+.separator {
+    color: #dbdbdb;
+}
+
+.description {
+    color: #262626;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.read-more {
+    display: inline-block;
+    color: #0095f6;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.read-more:hover {
+    color: #007cc2;
+}
+
+/* Load More Button */
+.load-more-container {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.btn-load-more {
+    padding: 1rem 2rem;
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-load-more:hover {
+    background-color: #007cc2;
+}
+
+.btn-load-more:disabled {
+    background-color: #dbdbdb;
+    color: #8e8e8e;
+    cursor: not-allowed;
+}
+
+/* No Articles Message */
+.no-articles {
+    text-align: center;
+    padding: 3rem 1rem;
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+}
+
+.no-articles h3 {
+    color: #262626;
+    margin-bottom: 0.5rem;
+}
+
+.no-articles p {
+    color: #8e8e8e;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem 0;
+    color: #8e8e8e;
+    font-size: 0.9rem;
+    margin-top: 4rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .feed-container {
+        padding: 0 10px;
+    }
+
+    .card-content h3 {
+        font-size: 1.1rem;
+    }
+
+    .card-image {
+        aspect-ratio: 1 / 1;
+    }
+}

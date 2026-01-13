@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Good News Aggregator{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1 class="admin-title">Admin Dashboard</h1>
+
+    <div class="admin-stats">
+        <div class="stat-card">
+            <h3>{{ total_articles }}</h3>
+            <p>Total Active Articles</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ manual_articles }}</h3>
+            <p>Manual Articles</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ auto_articles }}</h3>
+            <p>Auto-Fetched Articles</p>
+        </div>
+    </div>
+
+    <div class="admin-actions">
+        <a href="{{ url_for('admin.add_news') }}" class="btn-admin-primary">
+            ➕ Add News Article
+        </a>
+        <a href="{{ url_for('admin.manage_news') }}" class="btn-admin-secondary">
+            📝 Manage Articles
+        </a>
+        <a href="{{ url_for('news.feed') }}" class="btn-admin-secondary">
+            🏠 Back to Feed
+        </a>
+    </div>
+
+    <div class="recent-manual">
+        <h2>Recently Added Manual Articles</h2>
+        {% if recent_manual %}
+            <div class="manual-list">
+                {% for article in recent_manual %}
+                <div class="manual-item">
+                    <div class="manual-content">
+                        <h4>{{ article.title }}</h4>
+                        <p class="meta">Added {{ article.cached_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                        <a href="{{ article.source_url }}" target="_blank" class="manual-link">View Article →</a>
+                    </div>
+                    <div class="manual-actions">
+                        <a href="{{ url_for('admin.edit_news', article_id=article.id) }}" class="btn-edit">Edit</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-data">No manually added articles yet. Start by adding some good news!</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.admin-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+.admin-title {
+    text-align: center;
+    color: #262626;
+    margin-bottom: 2rem;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 2.5rem;
+    color: #0095f6;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+    color: #8e8e8e;
+    font-size: 0.9rem;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.btn-admin-primary, .btn-admin-secondary {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-admin-primary {
+    background-color: #0095f6;
+    color: white;
+}
+
+.btn-admin-primary:hover {
+    background-color: #007cc2;
+}
+
+.btn-admin-secondary {
+    background-color: white;
+    color: #262626;
+    border: 1px solid #dbdbdb;
+}
+
+.btn-admin-secondary:hover {
+    background-color: #fafafa;
+}
+
+.recent-manual h2 {
+    color: #262626;
+    margin-bottom: 1.5rem;
+}
+
+.manual-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.manual-item {
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.manual-content h4 {
+    color: #262626;
+    margin-bottom: 0.5rem;
+}
+
+.manual-link {
+    color: #0095f6;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.manual-link:hover {
+    text-decoration: underline;
+}
+
+.btn-edit {
+    padding: 0.5rem 1rem;
+    background-color: #0095f6;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.btn-edit:hover {
+    background-color: #007cc2;
+}
+
+.no-data {
+    text-align: center;
+    color: #8e8e8e;
+    padding: 2rem;
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+}
+</style>
+{% endblock %}
