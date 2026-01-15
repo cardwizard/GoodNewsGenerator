@@ -1,7 +1,18 @@
 from flask import Flask
+from flask_wtf.csrf import CSRFProtect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.models import db
 from app.config import Config
+
+# Initialize extensions
+csrf = CSRFProtect()
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
+)
 
 
 def create_app():
@@ -12,14 +23,20 @@ def create_app():
     # Initialize database
     db.init_app(app)
 
+    # Initialize security extensions
+    csrf.init_app(app)
+    limiter.init_app(app)
+
     # Register blueprints
     from app.auth import auth_bp
     from app.news import news_bp
     from app.admin import admin_bp
+    from app.interactions import interactions_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(news_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(interactions_bp)
 
     # Create database tables
     with app.app_context():

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Upload CSV - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-form-container">
+    <h1>Bulk Upload Articles from CSV</h1>
+
+    <div class="csv-info-box">
+        <h3>📋 CSV Format Requirements</h3>
+        <p>Your CSV file must include the following columns (column names are case-insensitive):</p>
+        <ul>
+            <li><strong>title</strong> or <strong>article_title</strong> - The article headline (required)</li>
+            <li><strong>url</strong> or <strong>article_url</strong> - Link to the article (required)</li>
+            <li><strong>source_name</strong> - Publication/website name (required)</li>
+            <li><strong>description</strong> - Brief description (optional)</li>
+            <li><strong>image_url</strong> - Link to article image (optional)</li>
+        </ul>
+        <p class="example-note">Example CSV:</p>
+        <pre class="csv-example">title,url,source_name,description,image_url
+"Amazing Discovery",https://example.com/article1,"Science Daily","Scientists make breakthrough",https://example.com/img1.jpg
+"Good News Story",https://example.com/article2,"Good News Network","Community comes together",</pre>
+    </div>
+
+    <form method="POST" action="{{ url_for('admin.upload_csv') }}" enctype="multipart/form-data" class="admin-form">
+        <div class="form-group">
+            <label for="csv_file">Select CSV File *</label>
+            <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+            <small>Choose a CSV file containing article data</small>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Upload and Import</button>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.admin-form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+.admin-form-container h1 {
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+}
+
+.csv-info-box {
+    background: linear-gradient(135deg, rgba(0, 149, 246, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
+    border: 2px solid var(--accent-primary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.csv-info-box h3 {
+    color: var(--text-primary);
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.csv-info-box ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.csv-info-box li {
+    margin: 0.5rem 0;
+    color: var(--text-secondary);
+}
+
+.csv-info-box li strong {
+    color: var(--accent-primary);
+    font-family: 'Courier New', monospace;
+}
+
+.example-note {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.csv-example {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+}
+
+.admin-form {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+input[type="file"] {
+    padding: 0.75rem;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+input[type="file"]:hover {
+    border-color: var(--accent-primary);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-primary);
+}
+
+@media (max-width: 768px) {
+    .csv-example {
+        font-size: 0.75rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

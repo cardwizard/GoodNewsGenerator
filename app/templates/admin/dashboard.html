@@ -25,8 +25,23 @@
         <a href="{{ url_for('admin.add_news') }}" class="btn-admin-primary">
             ➕ Add News Article
         </a>
+        <a href="{{ url_for('admin.upload_csv') }}" class="btn-admin-primary">
+            📄 Upload CSV
+        </a>
         <a href="{{ url_for('admin.manage_news') }}" class="btn-admin-secondary">
             📝 Manage Articles
+        </a>
+        <a href="{{ url_for('admin.review_articles') }}" class="btn-admin-secondary btn-with-badge">
+            📋 Review Articles
+            {% if pending_count and pending_count > 0 %}
+            <span class="badge badge-blue">{{ pending_count }}</span>
+            {% endif %}
+        </a>
+        <a href="{{ url_for('admin.moderation') }}" class="btn-admin-secondary btn-with-badge">
+            🛡️ Moderation
+            {% if reports_count and reports_count > 0 %}
+            <span class="badge badge-red">{{ reports_count }}</span>
+            {% endif %}
         </a>
         <a href="{{ url_for('news.feed') }}" class="btn-admin-secondary">
             🏠 Back to Feed
@@ -123,10 +138,36 @@
     background-color: white;
     color: #262626;
     border: 1px solid #dbdbdb;
+    position: relative;
 }
 
 .btn-admin-secondary:hover {
     background-color: #fafafa;
+}
+
+.btn-with-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.badge-blue {
+    background-color: #0095f6;
+    color: white;
+}
+
+.badge-red {
+    background-color: #ed4956;
+    color: white;
 }
 
 .recent-manual h2 {

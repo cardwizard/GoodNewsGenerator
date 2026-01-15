@@ -6,9 +6,12 @@ from app.config import Config
 logger = logging.getLogger(__name__)
 
 
-def fetch_good_news():
+def fetch_good_news(page_size=50):
     """
     Fetch positive news articles from NewsAPI.org
+
+    Args:
+        page_size: Number of articles to return (default 50, max 100)
 
     Returns:
         list: List of article dictionaries or None on error
@@ -26,11 +29,14 @@ def fetch_good_news():
         'award OR inspiring OR kindness OR reunited OR adopted OR hope'
     )
 
+    # Fetch more from API than requested to account for filtering
+    api_page_size = min(100, max(page_size * 2, 100))  # At least 100 for good filtering
+
     params = {
         'q': positive_query,
         'language': 'en',
         'sortBy': 'publishedAt',
-        'pageSize': 100,  # Fetch more to filter better
+        'pageSize': api_page_size,  # Fetch more to filter better
         'apiKey': Config.NEWS_API_KEY
     }
 
@@ -60,19 +66,20 @@ def fetch_good_news():
                 'title': title,
                 'description': description,
                 'content': article.get('content', ''),
-                'image_url': article.get('urlToImage'),
-                'published_at': parse_date(article.get('publishedAt')),
-                'source_name': article.get('source', {}).get('name', ''),
-                'source_url': article.get('url', '')
+                'urlToImage': article.get('urlToImage'),
+                'publishedAt': article.get('publishedAt'),
+                'source': article.get('source'),
+                'url': article.get('url', '')
             }
 
             # Only include articles with at least a title
             if parsed_article['title']:
                 parsed_articles.append(parsed_article)
 
-        # Return top 50 most recent positive articles
-        logger.info(f"Successfully fetched and filtered {len(parsed_articles)} positive articles")
-        return parsed_articles[:50]
+        # Return requested number of most recent positive articles
+        result = parsed_articles[:page_size]
+        logger.info(f"Successfully fetched and filtered {len(result)} positive articles")
+        return result
 
     except requests.exceptions.Timeout:
         logger.error("NewsAPI request timed out")
