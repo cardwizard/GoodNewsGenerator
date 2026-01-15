@@ -5,8 +5,11 @@ load_dotenv()
 
 
 class Config:
-    """Base configuration"""
+    """Base configuration - works for both local dev and Azure production"""
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+
+    # Database: SQLite for local dev, PostgreSQL/MySQL for Azure production
+    # Azure will set DATABASE_URL environment variable
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///good_news.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
