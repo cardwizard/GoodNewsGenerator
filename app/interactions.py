@@ -1,9 +1,13 @@
 from flask import Blueprint, request, jsonify, session
 from app.auth import login_required
 from app.models import db, Article, Like, Comment, ReportedComment, User, HappinessRating, ReadArticle
+from app import csrf
 from datetime import datetime
 
 interactions_bp = Blueprint('interactions', __name__, url_prefix='/api')
+
+# Exempt API routes from CSRF protection (they use session-based authentication)
+csrf.exempt(interactions_bp)
 
 # ==================== LIKE ENDPOINTS ====================
 
